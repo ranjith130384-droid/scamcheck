@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1120" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>ScamCheck — Family Scam Shield</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
+  <link rel="apple-touch-icon" href="./icons/icon.svg" />
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <img src="./icons/icon.svg" alt="ScamCheck logo" />
+        <span>ScamCheck</span>
+      </div>
+      <span class="pill-offline" id="offline-badge">100% On-Device</span>
+    </header>
+
+    <main class="main-content">
+      <!-- TAB 1: SCANNER -->
+      <section id="tab-scan" class="tab-panel active">
+        <div class="card">
+          <h2>Is This Real or a Scam?</h2>
+          <p class="sub">Paste any sketchy text, WhatsApp message, job offer, or link. Everything stays private on your phone.</p>
+          <textarea id="scan-input" rows="5" placeholder="Paste message or link here..."></textarea>
+          <div class="btn-row">
+            <button id="btn-paste-scan" class="btn btn-secondary" type="button">📋 1-Tap Paste</button>
+            <button id="btn-run-scan" class="btn btn-primary" type="button">🛡️ Check Now</button>
+          </div>
+          <div class="chips">
+            <button class="chip" data-sample="bank" type="button">Test: Bank Phish</button>
+            <button class="chip" data-sample="job" type="button">Test: Fake Job</button>
+            <button class="chip" data-sample="usps" type="button">Test: Delivery Fee</button>
+            <button class="chip" data-sample="safe" type="button">Test: Safe Text</button>
+          </div>
+        </div>
+
+        <div id="scan-result" style="display: none;"></div>
+      </section>
+
+      <!-- TAB 2: FAMILY SAFE-WORD -->
+      <section id="tab-safeword" class="tab-panel">
+        <div class="card">
+          <h2>Family Safe-Word</h2>
+          <p class="sub">Stops AI voice-clone emergencies (<em>"Mom, I crashed my car, send money now!"</em>). Share one seed with your family—everyone's phone generates the same rotating code offline.</p>
+
+          <label for="seed-input" class="sub" style="display:block; margin-bottom:6px;">Shared Family Seed</label>
+          <input id="seed-input" type="text" placeholder="e.g. K9M4-XP2L-7R8Q" />
+
+          <div class="btn-row">
+            <select id="cadence-select" aria-label="Rotation cadence">
+              <option value="weekly">Rotates Weekly</option>
+              <option value="daily">Rotates Daily</option>
+            </select>
+            <button id="btn-new-seed" class="btn btn-secondary" type="button">🎲 New Seed</button>
+          </div>
+
+          <div class="safeword-display">
+            <div class="sub" style="margin-bottom:4px;">CURRENT FAMILY SAFE-WORD</div>
+            <div id="safeword-word" class="safeword-word">—</div>
+            <div id="safeword-meta" class="safeword-meta">Backup PIN: —</div>
+          </div>
+
+          <button id="btn-share-seed" class="btn btn-primary btn-full" type="button">📤 Share Seed with Family</button>
+        </div>
+
+        <div class="card">
+          <h2>Emergency Call Rule</h2>
+          <ul class="action-list">
+            <li>If someone calls sounding panicked asking for money, gift cards, or crypto: <strong>hang up and ask for this week's Safe-Word</strong>.</li>
+            <li>If they can't say it, call your family member directly on their saved number.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- TAB 3: HISTORY VAULT -->
+      <section id="tab-vault" class="tab-panel">
+        <div class="card">
+          <h2>Scan Vault</h2>
+          <p class="sub">Saved locally on your device. Re-share warnings or review past checks anytime.</p>
+          <input id="vault-search" type="text" placeholder="Search saved scans..." />
+          <div class="btn-row">
+            <button id="btn-export-vault" class="btn btn-secondary" type="button">⬇️ Export JSON</button>
+            <button id="btn-clear-vault" class="btn btn-danger" type="button">🗑️ Clear Vault</button>
+          </div>
+        </div>
+        <div id="vault-list"></div>
+      </section>
+
+      <!-- TAB 4: PLAYBOOK -->
+      <section id="tab-guide" class="tab-panel">
+        <div class="card">
+          <h2>Active Scam Playbook</h2>
+          <p class="sub">How to spot the 5 biggest scams hitting phones right now.</p>
+          <div class="signal-item">
+            <div class="signal-top"><span>1. AI Voice-Clone Family Emergency</span><span class="badge-high">HIGH</span></div>
+            <div class="signal-detail">Scammers clone voices from 3-second social clips. Always verify with your Family Safe-Word.</div>
+          </div>
+          <div class="signal-item">
+            <div class="signal-top"><span>2. "Unpaid Toll / USPS Package" SMS</span><span class="badge-high">HIGH</span></div>
+            <div class="signal-detail">Uses lookalike domains (.xyz, .top) to steal card numbers for a fake \$0.35 fee.</div>
+          </div>
+          <div class="signal-item">
+            <div class="signal-top"><span>3. Telegram / WhatsApp Job Offers</span><span class="badge-high">HIGH</span></div>
+            <div class="signal-detail">Fake recruiters offer high remote pay and send fake "equipment checks" that bounce later.</div>
+          </div>
+          <div class="signal-item">
+            <div class="signal-top"><span>4. Bank "Fraud Dept" OTP Hijack</span><span class="badge-high">HIGH</span></div>
+            <div class="signal-detail">Caller claims your account is hacked and asks you to read back the 6-digit SMS code.</div>
+          </div>
+          <div class="signal-item">
+            <div class="signal-top"><span>5. Already Clicked or Paid?</span><span class="badge-medium">ACTION</span></div>
+            <div class="signal-detail">1) Freeze your card in your bank app. 2) Change passwords & enable app-based 2FA. 3) Freeze credit at Experian/Equifax/TransUnion.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Primary Navigation">
+      <button class="nav-btn active" data-tab="scan" type="button"><span class="nav-icon">🛡️</span>Check</button>
+      <button class="nav-btn" data-tab="safeword" type="button"><span class="nav-icon">🔑</span>Safe-Word</button>
+      <button class="nav-btn" data-tab="vault" type="button"><span class="nav-icon">🗂️</span>Vault</button>
+      <button class="nav-btn" data-tab="guide" type="button"><span class="nav-icon">📘</span>Playbook</button>
+    </nav>
+
+    <div id="toast" class="toast"></div>
+  </div>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
